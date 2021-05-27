@@ -152,11 +152,10 @@ read -r -p "This will install the base-devel package. Do you agree [y/N]? " bd_r
 bd_response=${bd_response,,}
 if [[ "$bd_response" =~ ^(yes|y)$ ]]
 then
-    echo "Installing the package.."
+    echo "Installing the base-devel package.."
     pacstrap /mnt base-devel
 else
-    echo "Quitting."
-    exit
+    echo "Not installing the base-devel packages."
 fi
 
 # Generating /etc/fstab.
