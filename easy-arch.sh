@@ -189,10 +189,12 @@ echo "Configuring /etc/mkinitcpio.conf for LUKS hook."
 sed -i -e 's,modconf block filesystems keyboard,keyboard keymap modconf block encrypt filesystems,g' /mnt/etc/mkinitcpio.conf
 
 # Setting up LUKS2 encryption and apparmor.
+echo "Setting LUKS2 encryption and apparmor"
 UUID=$(blkid $Cryptroot | cut -f2 -d'"')
 sed -i "s/quiet/quiet cryptdevice=UUID=$UUID:cryptroot root=$BTRFS lsm=lockdown,yama,apparmor,bpf/g" /mnt/etc/default/grub
 
 # Security kernel settings.
+echo "Setting kernel security"
 echo "kernel.kptr_restrict = 2" > /mnt/etc/sysctl.d/51-kptr-restrict.conf
 echo "kernel.kexec_load_disabled = 1" > /mnt/etc/sysctl.d/51-kexec-restrict.conf
 cat << EOF >> /mnt/etc/sysctl.d/10-security.conf
@@ -203,6 +205,7 @@ cat << EOF >> /mnt/etc/sysctl.d/10-security.conf
 EOF
 
 # Configuring the system.    
+echo "Configure the system with arch-chroot"
 arch-chroot /mnt /bin/bash -e <<EOF
     
     # Setting up timezone.
@@ -247,6 +250,7 @@ echo "Enabling AppArmor."
 systemctl enable apparmor --root=/mnt &>/dev/null
 
 # Enabling Reflector timer.
+echo "Enable reflector"
 systemctl enable reflector.timer --root=/mnt &>/dev/null
 
 # Enabling Snapper automatic snapshots.
